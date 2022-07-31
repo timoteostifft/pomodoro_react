@@ -1,6 +1,6 @@
 import { Play } from 'phosphor-react';
 import React from 'react';
-import { CountDownContainer, FormContainer, HomeContainer, Separator } from './styles';
+import { CountDownContainer, FormContainer, HomeContainer, Separator, StartCountDownButton } from './styles';
 
 // import { Container } from './styles';
 
@@ -26,10 +26,10 @@ const Home: React.FC = () => {
           <span>0</span>
         </CountDownContainer>
 
-        <button type='submit'>
+        <StartCountDownButton type='submit' disabled>
           <Play size={24} />
           Começar
-        </button>
+        </StartCountDownButton>
       </form>
     </HomeContainer>
   )
