@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { HistoryContainer, HistoryList } from './styles';
+import { HistoryContainer, HistoryList, Status } from './styles';
 
 const History: React.FC = () => {
   return (
@@ -22,25 +22,25 @@ const History: React.FC = () => {
               <td>Tarefa</td>
               <td>20 minutos</td>
               <td>Há cerca de 2 meses</td>
-              <td>Concluído</td>
+              <td>
+                <Status statusColor='green'>Conclúido</Status>
+              </td>
             </tr>
             <tr>
               <td>Tarefa</td>
               <td>20 minutos</td>
               <td>Há cerca de 2 meses</td>
-              <td>Concluído</td>
+              <td>
+                <Status statusColor='yellow'>Em andamento</Status>
+              </td>
             </tr>
             <tr>
               <td>Tarefa</td>
               <td>20 minutos</td>
               <td>Há cerca de 2 meses</td>
-              <td>Concluído</td>
-            </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 meses</td>
-              <td>Concluído</td>
+              <td>
+                <Status statusColor='red'>Interrompido</Status>
+              </td>
             </tr>
           </tbody>
         </table>
