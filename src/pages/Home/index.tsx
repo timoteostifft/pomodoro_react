@@ -1,16 +1,41 @@
-import { Play } from 'phosphor-react';
 import React from 'react';
+
+import { Play } from 'phosphor-react';
 import { CountDownContainer, FormContainer, HomeContainer, MinutesAmount, Separator, StartCountDownButton, TaskInput } from './styles';
 
-// import { Container } from './styles';
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
+const formValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .max(60, 'O ciclo precisa ser de no máximo 60 minutos.')
+})
 
 const Home: React.FC = () => {
+  const { register, handleSubmit, watch } = useForm()
+
+  function handleCreateNewFormCycle(data: any) {
+    resolver: zodResolver(formValidationSchema)
+  }
+
+  const task = watch('task')
+  const isSubmitDisabled = !task
+
   return (
     <HomeContainer>
-      <form action="">
+      <form action="" onSubmit={handleSubmit(handleCreateNewFormCycle)}>
         <FormContainer>
           <label htmlFor="">Vou trabalhar em</label>
-          <TaskInput id='task' placeholder='Dê um nome para seu projeto' list='task-suggestions' />
+          <TaskInput
+            id='task'
+            placeholder='Dê um nome para seu projeto'
+            list='task-suggestions'
+            {...register('task')}
+          />
 
           <datalist id='task-suggestions'>
             <option value="Projeto" />
@@ -26,6 +51,7 @@ const Home: React.FC = () => {
             step={5}
             min={5}
             max={60}
+            {...register('minutesAmount', { valueAsNumber: true })}
           />
 
           <span>minutos.</span>
@@ -39,7 +65,7 @@ const Home: React.FC = () => {
           <span>0</span>
         </CountDownContainer>
 
-        <StartCountDownButton type='submit' disabled>
+        <StartCountDownButton type='submit' disabled={isSubmitDisabled}>
           <Play size={24} />
           Começar
         </StartCountDownButton>
