@@ -15,11 +15,19 @@ const formValidationSchema = zod.object({
     .max(60, 'O ciclo precisa ser de no máximo 60 minutos.')
 })
 
-const Home: React.FC = () => {
-  const { register, handleSubmit, watch } = useForm()
+type formData = zod.infer<typeof formValidationSchema>
 
-  function handleCreateNewFormCycle(data: any) {
-    resolver: zodResolver(formValidationSchema)
+const Home: React.FC = () => {
+  const { register, handleSubmit, watch } = useForm<formData>({
+    resolver: zodResolver(formValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0
+    }
+  })
+
+  function handleCreateNewFormCycle(data: formData) {
+    console.log(data)
   }
 
   const task = watch('task')
