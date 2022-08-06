@@ -23,6 +23,8 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
+  finishedDate?: Date
 }
 
 const Home: React.FC = () => {
@@ -40,19 +42,41 @@ const Home: React.FC = () => {
 
   const activeCycle = cycles.find(cycle => cycle.id === activeCycleId)
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+
   useEffect(() => {
     let interval: number
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(differenceInSeconds(new Date(), activeCycle.startDate))
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate
+        )
+
+        if (secondsDifference >= totalSeconds) {
+          setCycles(
+            state => state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              } else {
+                return cycle
+              }
+            })
+          )
+
+          setAmountSecondsPassed(totalSeconds)
+          clearInterval(interval)
+        } else {
+          setAmountSecondsPassed(secondsDifference)
+        }
       }, 1000)
     }
 
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds, activeCycleId])
 
   function handleCreateNewFormCycle(data: formData) {
     const id = String(new Date().getTime())
@@ -70,7 +94,20 @@ const Home: React.FC = () => {
     reset()
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  function handleInterruptCycle() {
+    setCycles(
+      state => state.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      })
+    )
+
+    setActiveCycleId(null)
+  }
+
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
   const minutesAmount = Math.floor(currentSeconds / 60)
@@ -97,6 +134,7 @@ const Home: React.FC = () => {
             id='task'
             placeholder='Dê um nome para seu projeto'
             list='task-suggestions'
+            disabled={!!activeCycle}
             {...register('task')}
           />
 
@@ -114,6 +152,7 @@ const Home: React.FC = () => {
             step={5}
             min={5}
             max={60}
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
 
@@ -129,7 +168,7 @@ const Home: React.FC = () => {
         </CountDownContainer>
 
         {activeCycle ? (
-          <StopCountDownButton type='button'>
+          <StopCountDownButton onClick={handleInterruptCycle} type='button'>
             <HandPalm size={24} />
             Interromper
           </StopCountDownButton>
