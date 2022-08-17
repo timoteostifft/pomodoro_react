@@ -44,6 +44,8 @@ const Countdown: React.FC = () => {
   useEffect(() => {
     if (activeCycle) {
       document.title = `${minutes}:${seconds} - Time to Focus!`
+    } else {
+      document.title = 'Pomodoro Timer'
     }
   }, [minutes, seconds, activeCycle])
 
